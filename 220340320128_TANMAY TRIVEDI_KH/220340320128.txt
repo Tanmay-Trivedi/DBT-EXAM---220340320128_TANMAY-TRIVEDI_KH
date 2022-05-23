@@ -1,0 +1,263 @@
+/*
+			ROLL NO = 220340320128
+
+			Name      = TANMAY TRIVEDI 
+			Centre    = KHARGARH
+			EXAM      = MODULE 4 ( DBT ) 
+			EXAM DATE = 23/05/2022 
+
+*/
+
+SECTION - 1
+===============================================================================================================================
+create table DEPT(
+DEPTNO int(2),
+DNAME varchar(15),
+LOC varchar(10)
+);
+insert into dept values( 10,'ACCOUNTING','NEW YORK'),(20,'RESEARCH','DALLAS'),(30,'SALES','CHICAGO'),(40,'OPERATIONS','BOSTON');
+
+select * from dept ;
+
+===============================================================================================================================
+
+create table emp(
+EMPNO int(4),
+ENAME varchar(10),
+JOB varchar(9),
+HIREDATE date,
+SAL float(7,2),
+COMM float(7,2),
+DEPTNO int(2)
+);
+desc emp;
+insert into emp(empno,ename,job,hiredate,sal,comm,deptno) values 
+(7839 ,'KING', 'MANAGER','1991-11-17',5000 ,NULL,10),
+(7698 ,'BLAKE','CLERK','1981-05-01',2850,NULL,30),
+(7782 ,'CLARK','MANAGER','1981-06-09',2450,NULL,10),
+(7566 ,'JONES','CLERK','1981-04-02',2975,NULL,20),
+(7654 ,'MARTIN','SALESMAN','1981-09-28',1250,1400,30),
+(7499 ,'ALLEN','SALESMAN','1981-02-20',1600,300,30);
+
+select * from emp;
+
+===============================================================================================================================
+-- Write SELECT statements to achieve the following:-
+===============================================================================================================================
+-- 3. Display all the employees where SAL between 2500 and 5000 (inclusive of both).
+
+select ename,sal from emp where sal between 2500 and 5000;
+
+OUTPUT :
+
+ ENAME     SAL 
+- - - - - - - - - - - - -
+'KING'  ,  '5000.00'
+'BLAKE' ,  '2850.00'
+'JONES' ,  '2975.00'
+
+
+===============================================================================================================================
+-- 4. Display all the ENAMEs in descending order of ENAME.
+
+select ename from emp order by ename desc;
+
+OUTPUT :
+
+ ENAME
+- - - - - - - 
+'MARTIN'
+'KING'
+'JONES'
+'CLARK'
+'BLAKE'
+'ALLEN'
+
+
+===============================================================================================================================
+
+-- 5. Display all the JOBs in lowercase.
+
+select lower(job) from emp ;
+
+OUTPUT :
+
+lower(job)
+- - - - - - - -
+manager
+clerk
+manager
+clerk
+salesman
+salesman
+
+
+===============================================================================================================================
+
+-- 6. Display the ENAMEs and the lengths of the ENAMEs.
+
+select ename,length(ename) from emp;
+
+OUTPUT :
+
+ ename	,        length(ename)
+----------------------------------
+KING	, 		4
+BLAKE	, 		5
+CLARK	,	        5
+JONES	, 		5
+MARTIN	, 		6
+ALLEN   , 		5
+
+
+===============================================================================================================================
+
+-- 7. Display the DEPTNO and the count of employees who belong to that DEPTNO .
+
+select DEPTNO,count(*) from emp group by deptno ; 
+
+OUTPUT :
+
+DEPTNO  ,    count(*)
+-----------------------
+10	,	 2
+30	,	 3
+20	,	 1
+
+===============================================================================================================================
+
+-- 8. Display the DNAMEs and the ENAMEs who belong to that DNAME.
+
+select dname,ename from emp,dept where dept.deptno = emp.deptno order by dname;
+
+OUTPUT :
+
+ dname		ename
+-------------------------
+ACCOUNTING	KING
+ACCOUNTING	CLARK
+RESEARCH	JONES
+SALES		BLAKE
+SALES		MARTIN
+SALES		ALLEN
+
+
+===============================================================================================================================
+
+-- 9. Display the position at which the string ‘AR’ occurs in the ename.
+
+select instr(ename,'AR') from emp ;
+
+OUTPUT :
+
+instr(ename,'AR')
+------------------
+0
+0
+3
+0
+2
+0
+
+
+===============================================================================================================================
+
+-- 10. Display the HRA for each employee given that HRA is 20% of SAL.
+
+select ename, sal*0.2 as "HRA" from emp order by HRA;
+
+OUTPUT :
+
+ ENAME		HRA
+-----------------------------------------------------
+MARTIN		250.00
+ALLEN		320.00
+CLARK		490.00
+BLAKE		570.00
+JONES		595.00
+KING		1000.00
+
+
+===============================================================================================================================
+===============================================================================================================================
+
+								SECTION 2
+
+
+-- Question 1 :
+ 
+delimiter // 
+create procedure PROC1 (str1 varchar(20),str2 varchar(20))
+begin
+	if instr(str2,str1) <> 0 then
+		insert into tempp values (str1,' EXISTS ');
+	else 
+		insert into tempp values (str1,'DOES NOT EXISTS');
+    end if;
+end;
+// delimiter ;
+
+-- OUTPUT TABLE 
+create table tempp (
+str varchar(20),
+status varchar(20)
+);
+
+call PROC1('DAC','CDAC');
+select * from tempp;
+
+OUTPUT :
+
+ str	status
+DAC	 EXISTS 
+
+===========================================================================================================================
+
+-- Question 2 : 
+DELIMITER //
+create function FUNC1 (
+a int,
+b int, 
+c int
+)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN 
+	DECLARE x boolean ;
+     if (a+b > c) then 
+		set x = TRUE;
+        else if ((b+c) > a) then 
+				set x = TRUE;
+        else if ((c+a)  > b) then 
+				set x = TRUE;
+         else set x = FALSE;       
+		end if;
+        end if;
+        end if;
+		return(x);
+        end; //
+        DELIMITER ;
+ 
+ delimiter // 
+create procedure TT(a int , b int , c int)
+begin
+	declare x boolean;
+    set x  = FUNC1(a,b,c);
+    if x then 
+		insert into Ttemp values ('TRUE');
+	else 
+		insert into Ttemp values ('FALSE');
+	end if;    
+end;
+// delimiter ;
+call TT(10,20,30);
+select * from Ttemp;
+-- OUTPUT TABLE 
+create table Ttemp(RESULT varchar(20));
+
+OUTPUT :
+
+RESULT 
+--------
+TRUE 
+
